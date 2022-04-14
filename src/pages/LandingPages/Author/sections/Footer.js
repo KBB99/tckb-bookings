@@ -37,7 +37,7 @@ function Footer() {
             mb={{ xs: 3, lg: 0 }}
           >
             <MKTypography variant="h6" textTransform="uppercase" mb={{ xs: 2, lg: 3 }}>
-              TCKB Bookings
+              Material Design
             </MKTypography>
             <Stack
               component="ul"

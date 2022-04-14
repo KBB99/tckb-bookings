@@ -4,7 +4,7 @@
 
 ![Image](https://s3.amazonaws.com/creativetim_bucket/products/83/original/material-kit-2-react.jpg)
 
-Material Kit 2 React is our newest free MUI Design System based on React. Its amazing design is inspired by TCKB Bookings and contains all the components you need for your development. If you’re a developer looking to create good-looking websites, rich with features, and highly customisable, here is your match.
+Material Kit 2 React is our newest free MUI Design System based on React. Its amazing design is inspired by Material Design and contains all the components you need for your development. If you’re a developer looking to create good-looking websites, rich with features, and highly customisable, here is your match.
 
 _Fully Coded Elements_
 Material Kit 2 React is built with over 40 frontend individual elements, like buttons, inputs, navbars, alerts or cards, giving you the freedom of choosing and combining. All components can take variations in color, which you can easily modify using MUI styled() API and sx prop. You will save a lot of time going from prototyping to full-functional code because all elements are implemented.

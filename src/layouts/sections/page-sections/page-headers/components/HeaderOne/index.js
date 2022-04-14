@@ -42,7 +42,7 @@ function HeaderOne() {
               py={0.8125}
               mr={2}
             >
-              TCKB Bookings
+              Material Design
             </MKTypography>
             <MKButton
               variant="outlined"

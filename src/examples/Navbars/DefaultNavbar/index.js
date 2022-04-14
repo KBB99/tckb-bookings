@@ -68,8 +68,8 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
       }
     }
 
-    /**
-     The event listener that's calling the displayMobileNavbar function when
+    /** 
+     The event listener that's calling the displayMobileNavbar function when 
      resizing the window.
     */
     window.addEventListener("resize", displayMobileNavbar);
@@ -563,7 +563,7 @@ DefaultNavbar.defaultProps = {
 // Typechecking props for the DefaultNavbar
 DefaultNavbar.propTypes = {
   brand: PropTypes.string,
-  routes: PropTypes.array,
+  routes: PropTypes.arrayOf(PropTypes.object).isRequired,
   transparent: PropTypes.bool,
   light: PropTypes.bool,
   action: PropTypes.oneOfType([

@@ -136,8 +136,8 @@ CenteredFooter.defaultProps = {
 // Typechecking props for the CenteredFooter
 CenteredFooter.propTypes = {
   company: PropTypes.objectOf(PropTypes.string),
-  links: PropTypes.array,
-  socials: PropTypes.array,
+  links: PropTypes.arrayOf(PropTypes.object),
+  socials: PropTypes.arrayOf(PropTypes.object),
   light: PropTypes.bool,
 };
 
