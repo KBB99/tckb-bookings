@@ -8,11 +8,21 @@ import Stack from "@mui/material/Stack";
 import MKBox from "components/MKBox";
 import MKButton from "components/MKButton";
 import MKTypography from "components/MKTypography";
+import MKInput from "components/MKInput";
+import React, { useState } from 'react';
 
 // Images
 import bgImage from "assets/images/bg-coworking.jpeg";
 
+const fetchFlights = (origin, destination) => {
+  console.log(origin, destination)
+}
+
 function HeaderOne() {
+
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+
   return (
     <MKBox component="header" position="relative">
       <MKBox component="nav" position="absolute" top="0.5rem" width="100%">
@@ -156,7 +166,11 @@ function HeaderOne() {
               Travel around the world and find your true self.
             </MKTypography>
             <Stack direction="row" spacing={1} mt={3}>
-              <MKButton color="white">Search</MKButton>
+              <MKInput label="Origin (i.e. Los Angeles)" type="text" value={origin} onChange={(e)=>setOrigin(e.target.value)} style={{backgroundColor:"white"}}/>
+              <MKInput label="Destination (i.e. Shanghai)" type="text" value={destination} onChange={(e)=>setDestination(e.target.value)} style={{backgroundColor:"white"}}/>
+            </Stack>
+            <Stack direction="row" spacing={1} mt={3}>
+              <MKButton color="white" onClick={()=>fetchFlights(origin, destination)}>Search</MKButton>
               <MKButton variant="text" color="white">
                 Surprise Me
               </MKButton>
