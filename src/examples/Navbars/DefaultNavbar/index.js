@@ -68,8 +68,8 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
       }
     }
 
-    /** 
-     The event listener that's calling the displayMobileNavbar function when 
+    /**
+     The event listener that's calling the displayMobileNavbar function when
      resizing the window.
     */
     window.addEventListener("resize", displayMobileNavbar);
@@ -551,7 +551,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
 
 // Setting default values for the props of DefaultNavbar
 DefaultNavbar.defaultProps = {
-  brand: "Material Kit 2",
+  brand: "TCKB Bookings",
   transparent: false,
   light: false,
   action: false,

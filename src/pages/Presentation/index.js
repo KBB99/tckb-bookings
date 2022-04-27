@@ -10,18 +10,34 @@ import MKButton from "components/MKButton";
 import MKTypography from "components/MKTypography";
 import MKInput from "components/MKInput";
 import React, { useState } from 'react';
+import moment from 'moment';
 
 // Images
 import bgImage from "assets/images/bg-coworking.jpeg";
 
-const fetchFlights = (origin, destination) => {
+const fetchFlights = (origin, destination,departureDate,returnDate) => {
   console.log(origin, destination)
+  var data = {origin: origin, destination: destination}
+  if (departureDate != ""){
+    data.departureDate = departureDate
+  }
+  fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
+      method: 'POST',
+      mode: 'cors',
+      cache: "no-cache",
+      body: JSON.stringify(data)
+    }
+  ).then(res => res.json())
+  .then(res => console.log(res)).catch(err=>console.log(err))
 }
 
 function HeaderOne() {
 
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
+  const [departureDate, setDepartureDate] = useState("");
+  const [returnDate, setReturnDate] = useState("");
+  const [isRoundTrip, setIsRoundTrip] = useState(false);
 
   return (
     <MKBox component="header" position="relative">
@@ -42,9 +58,21 @@ function HeaderOne() {
             <MKButton
               variant="outlined"
               color="white"
+              href="/pages/authentication/sign-in"
               sx={{ display: { xs: "block", lg: "none" }, ml: "auto" }}
             >
-              <MKBox component="i" color="white" className="fas fa-bars" />
+              <MKBox component="li">
+                <MKTypography
+                  component={Link}
+                  href="/pages/authentication/sign-in"
+                  color="white"
+                  variant="button"
+                  p={1}
+                  // onClick={(e) => e.preventDefault()}
+                >
+                  Sign In
+                </MKTypography>
+              </MKBox>
             </MKButton>
             <MKBox
               component="ul"
@@ -54,45 +82,7 @@ function HeaderOne() {
               mx="auto"
               sx={{ listStyle: "none" }}
             >
-              <MKBox component="li">
-                <MKTypography
-                  component={Link}
-                  href="#"
-                  variant="button"
-                  color="white"
-                  fontWeight="regular"
-                  p={1}
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Home
-                </MKTypography>
-              </MKBox>
-              <MKBox component="li">
-                <MKTypography
-                  component={Link}
-                  href="#"
-                  variant="button"
-                  color="white"
-                  fontWeight="regular"
-                  p={1}
-                  onClick={(e) => e.preventDefault()}
-                >
-                  About Us
-                </MKTypography>
-              </MKBox>
-              <MKBox component="li">
-                <MKTypography
-                  component={Link}
-                  href="#"
-                  variant="button"
-                  color="white"
-                  fontWeight="regular"
-                  p={1}
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Contact Us
-                </MKTypography>
-              </MKBox>
+              
             </MKBox>
             <MKBox
               component="ul"
@@ -104,34 +94,13 @@ function HeaderOne() {
               <MKBox component="li">
                 <MKTypography
                   component={Link}
-                  href="#"
+                  href="/pages/authentication/sign-in"
+                  color="white"
                   variant="button"
                   p={1}
-                  onClick={(e) => e.preventDefault()}
+                  // onClick={(e) => e.preventDefault()}
                 >
-                  <MKBox component="i" color="white" className="fab fa-twitter" />
-                </MKTypography>
-              </MKBox>
-              <MKBox component="li">
-                <MKTypography
-                  component={Link}
-                  href="#"
-                  variant="button"
-                  p={1}
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <MKBox component="i" color="white" className="fab fa-facebook" />
-                </MKTypography>
-              </MKBox>
-              <MKBox component="li">
-                <MKTypography
-                  component={Link}
-                  href="#"
-                  variant="button"
-                  p={1}
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <MKBox component="i" color="white" className="fab fa-instagram" />
+                  Sign In
                 </MKTypography>
               </MKBox>
             </MKBox>
@@ -166,15 +135,43 @@ function HeaderOne() {
               Travel around the world and find your true self.
             </MKTypography>
             <Stack direction="row" spacing={1} mt={3}>
-              <MKInput label="Origin (i.e. Los Angeles)" type="text" value={origin} onChange={(e)=>setOrigin(e.target.value)} style={{backgroundColor:"white"}}/>
-              <MKInput label="Destination (i.e. Shanghai)" type="text" value={destination} onChange={(e)=>setDestination(e.target.value)} style={{backgroundColor:"white"}}/>
+              <MKButton color={(isRoundTrip)?"info":"white"} onClick={()=>setIsRoundTrip(!isRoundTrip)}>Round Trip</MKButton>
             </Stack>
             <Stack direction="row" spacing={1} mt={3}>
-              <MKButton color="white" onClick={()=>fetchFlights(origin, destination)}>Search</MKButton>
+              <MKInput label="Origin (i.e. JFK)" type="text" value={origin} onChange={(e)=>setOrigin(e.target.value)} style={{backgroundColor:"white"}}/>
+              <MKInput label="Destination (i.e. PVG)" type="text" value={destination} onChange={(e)=>setDestination(e.target.value)} style={{backgroundColor:"white"}}/>
+            </Stack>
+            <Stack direction="row" spacing={1} mt={3}>
+              <MKInput label="Departure Date (MM/DD/YY)" type="text" value={departureDate} onChange={(e)=>setDepartureDate(e.target.value)} style={{backgroundColor:"white"}}/>
+              {isRoundTrip&&<MKInput label="Return Date (MM/DD/YY)" type="text" value={returnDate} onChange={(e)=>setReturnDate(e.target.value)} style={{backgroundColor:"white"}}/>}
+            </Stack>
+            <Stack direction="row" spacing={1} mt={3}>
+              <MKButton color="white" onClick={()=>fetchFlights(origin, destination, departureDate, returnDate)}>Search</MKButton>
               <MKButton variant="text" color="white">
                 Surprise Me
               </MKButton>
             </Stack>
+{/*    <div>
+  <h1>SQL Response</h1>
+  <ul>
+    {[
+('China Eastern', 'A101', '(2022, 4, 7, 11, 0)', 'CE-111', 'JFK', 'PVG', '(2022, 4, 8, 15, 0)', 'o', '7000.00'),
+('China Eastern', 'A202', '(2022, 4, 10, 16, 0)', 'CE-222', 'JFK', 'PVG', '(2022, 4, 11, 20, 0)', 'd', '6500.00')
+].map((row, i) => (
+      <li key={i}>
+        <p>Airline: {row[0]}</p>
+        <p>Flight Number: {row[1]}</p>
+        <p>Departure Date: {moment(row[2]).format('MMMM Do YYYY, h:mm:ss a')}</p>
+        <p>Flight Code: {row[3]}</p>
+        <p>Departure Airport: {row[4]}</p>
+        <p>Arrival Airport: {row[5]}</p>
+        <p>Arrival Date: {moment(row[6]).format('MMMM Do YYYY, h:mm:ss a')}</p>
+        <p>Flight Type: {row[7]}</p>
+        <p>Price: {row[8]}</p>
+      </li>
+    ))}
+  </ul>
+</div>*/}
           </Grid>
         </Container>
       </MKBox>
