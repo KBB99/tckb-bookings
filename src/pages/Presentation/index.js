@@ -11,6 +11,7 @@ import MKTypography from "components/MKTypography";
 import MKInput from "components/MKInput";
 import React, { useState } from 'react';
 import moment from 'moment';
+import {useNavigate, createSearchParams} from 'react-router-dom';
 
 // Images
 import bgImage from "assets/images/bg-coworking.jpeg";
@@ -31,13 +32,14 @@ const fetchFlights = (origin, destination,departureDate,returnDate) => {
   .then(res => console.log(res)).catch(err=>console.log(err))
 }
 
-function HeaderOne() {
+function HeaderOne({navigation}) {
 
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [departureDate, setDepartureDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [isRoundTrip, setIsRoundTrip] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <MKBox component="header" position="relative">
@@ -82,7 +84,7 @@ function HeaderOne() {
               mx="auto"
               sx={{ listStyle: "none" }}
             >
-              
+
             </MKBox>
             <MKBox
               component="ul"
@@ -146,7 +148,7 @@ function HeaderOne() {
               {isRoundTrip&&<MKInput label="Return Date (MM/DD/YY)" type="text" value={returnDate} onChange={(e)=>setReturnDate(e.target.value)} style={{backgroundColor:"white"}}/>}
             </Stack>
             <Stack direction="row" spacing={1} mt={3}>
-              <MKButton color="white" onClick={()=>fetchFlights(origin, destination, departureDate, returnDate)}>Search</MKButton>
+              <MKButton color="white" onClick={()=>navigate({pathname:'/pages/landing-pages/contact-us',search: createSearchParams({origin:origin, destination:destination, departureDate:departureDate,returnDate:returnDate}).toString() }) }>Search</MKButton>
               <MKButton variant="text" color="white">
                 Surprise Me
               </MKButton>
