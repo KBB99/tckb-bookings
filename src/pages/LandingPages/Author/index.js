@@ -34,6 +34,7 @@ import routes from "routes";
 // Images
 import bgImage from "assets/images/city-profile.jpg";
 
+
 function Author() {
   return (
     <>
@@ -76,10 +77,7 @@ function Author() {
           }}
         >
           <Profile />
-          <Posts />
         </Card>
-        <Contact />
-        <Footer />
       </MKBox>
     </>
   );

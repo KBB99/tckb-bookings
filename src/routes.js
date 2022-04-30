@@ -45,8 +45,18 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 // Pages
 import AboutUs from "layouts/pages/landing-pages/about-us";
 import ContactUs from "layouts/pages/landing-pages/contact-us";
+import BuyTicket from "layouts/pages/landing-pages/buy-ticket";
+import MyFlights from "layouts/pages/landing-pages/my-flights";
+import MySpending from "layouts/pages/landing-pages/my-spending";
+import AirlineFlights from "layouts/pages/landing-pages/airline-flights";
+import FlightRatings from "layouts/pages/landing-pages/flight-ratings";
+import MostFrequentCustomer from "layouts/pages/landing-pages/most-frequent-customer";
+import AirlineReports from "layouts/pages/landing-pages/airline-reports";
+import EarnedRevenue from "layouts/pages/landing-pages/earned-revenue";
+import TopDestinations from "layouts/pages/landing-pages/top-destinations";
 import Author from "layouts/pages/landing-pages/author";
 import SignIn from "layouts/pages/authentication/sign-in";
+import SignUp from "layouts/pages/authentication/sign-up";
 
 // Sections
 import PageHeaders from "layouts/sections/page-sections/page-headers";
@@ -93,6 +103,46 @@ const routes = [
             route: "/pages/landing-pages/author",
             component: <Author />,
           },
+          {
+            name: "my flights",
+            route: "/pages/landing-pages/my-flights",
+            component: <MyFlights />,
+          },
+          {
+            name: "my flights",
+            route: "/pages/landing-pages/my-spending",
+            component: <MySpending />,
+          },
+          {
+            name: "airline flights",
+            route: "/pages/landing-pages/airline-flights",
+            component: <AirlineFlights />,
+          },
+          {
+            name: "flight ratings",
+            route: "/pages/landing-pages/flight-ratings",
+            component: <FlightRatings />,
+          },
+          {
+            name: "most frequent customer",
+            route: "/pages/landing-pages/most-frequent-customer",
+            component: <MostFrequentCustomer />,
+          },
+          {
+            name: "airline reports",
+            route: "/pages/landing-pages/airline-reports",
+            component: <AirlineReports />,
+          },
+          {
+            name: "earned revenue",
+            route: "/pages/landing-pages/earned-revenue",
+            component: <EarnedRevenue />,
+          },
+          {
+            name: "top destinations",
+            route: "/pages/landing-pages/top-destinations",
+            component: <TopDestinations />,
+          },
         ],
       },
       {
@@ -102,6 +152,16 @@ const routes = [
             name: "sign in",
             route: "/pages/authentication/sign-in",
             component: <SignIn />,
+          },
+        ],
+      },
+      {
+        name: "account",
+        collapse: [
+          {
+            name: "sign up",
+            route: "/pages/authentication/sign-up",
+            component: <SignUp />,
           },
         ],
       },

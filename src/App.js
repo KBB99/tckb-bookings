@@ -25,12 +25,15 @@ import CssBaseline from "@mui/material/CssBaseline";
 // Material Kit 2 React themes
 import theme from "assets/theme";
 import Presentation from "layouts/pages/presentation";
-import ContactUs from "./pages/LandingPages/ContactUs"
+import ContactUs from "./pages/LandingPages/ContactUs";
+
+import {ReactSession} from 'react-client-session';
 
 // Material Kit 2 React routes
 import routes from "routes";
 
 export default function App() {
+  ReactSession.setStoreType("localStorage");
   const { pathname } = useLocation();
 
   // Setting page scroll to 0 when changing the route

@@ -40,6 +40,9 @@ import MKButton from "components/MKButton";
 import DefaultNavbarDropdown from "examples/Navbars/DefaultNavbar/DefaultNavbarDropdown";
 import DefaultNavbarMobile from "examples/Navbars/DefaultNavbar/DefaultNavbarMobile";
 
+import {ReactSession} from 'react-client-session';
+
+
 // Material Kit 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
 
@@ -486,41 +489,10 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
             ml="auto"
             mr={center ? "auto" : 0}
           >
-            {renderNavbarItems}
+
           </MKBox>
           <MKBox ml={{ xs: "auto", lg: 0 }}>
-            {action &&
-              (action.type === "internal" ? (
-                <MKButton
-                  component={Link}
-                  to={action.route}
-                  variant={
-                    action.color === "white" || action.color === "default"
-                      ? "contained"
-                      : "gradient"
-                  }
-                  color={action.color ? action.color : "info"}
-                  size="small"
-                >
-                  {action.label}
-                </MKButton>
-              ) : (
-                <MKButton
-                  component="a"
-                  href={action.route}
-                  target="_blank"
-                  rel="noreferrer"
-                  variant={
-                    action.color === "white" || action.color === "default"
-                      ? "contained"
-                      : "gradient"
-                  }
-                  color={action.color ? action.color : "info"}
-                  size="small"
-                >
-                  {action.label}
-                </MKButton>
-              ))}
+            {ReactSession.get("username")?<MKButton href="/pages/authentication/sign-in" onClick={()=>{ReactSession.set("username",null);window.location.href="/"}}>Sign Out</MKButton>:<MKButton href="/pages/authentication/sign-in">Sign In</MKButton>}
           </MKBox>
           <MKBox
             display={{ xs: "inline-block", lg: "none" }}
@@ -531,7 +503,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
             sx={{ cursor: "pointer" }}
             onClick={openMobileNavbar}
           >
-            <Icon fontSize="default">{mobileNavbar ? "close" : "menu"}</Icon>
+
           </MKBox>
         </MKBox>
         <MKBox

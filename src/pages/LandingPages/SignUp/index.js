@@ -38,10 +38,7 @@ import MKButton from "components/MKButton";
 // Material Kit 2 React example components
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import SimpleFooter from "examples/Footers/SimpleFooter";
-import MKAlert from "components/MKAlert";
-
-import {fetchLogin} from "../../../functions/connects.js";
-import {useNavigate} from 'react-router-dom';
+import {fetchSignUpCustomer, fetchSignUpStaff} from "../../../functions/connects.js";
 
 // Material Kit 2 React page layout routes
 import routes from "routes";
@@ -55,9 +52,20 @@ function SignInBasic() {
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [buildingNumber, setBuildingNumber] = useState("")
+  const [street, setStreet] = useState("")
+  const [city, setCity] = useState("")
+  const [state_, setState_] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [passportNumber, setPassportNumber] = useState("")
+  const [passportExpiration, setPassportExpiration] = useState("")
+  const [passportCountry, setPassportCountry] = useState("")
   const [isStaff, setIsStaff] = useState(false)
-  const [loginFailed, setLoginFailed] = useState(false);
-  const navigate = useNavigate();
+  const [companyName, setCompanyName] = useState("")
+  const [dob, setDob] = useState("")
+
 
   return (
     <>
@@ -93,7 +101,6 @@ function SignInBasic() {
       <MKBox px={1} width="100%" height="100vh" mx="auto" position="relative" zIndex={2}>
         <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
           <Grid item xs={11} sm={9} md={5} lg={4} xl={3}>
-          {loginFailed&&<MKAlert color="error" dismissible>Incorrect Username or Password!</MKAlert>}
             <Card>
               <MKBox
                 variant="gradient"
@@ -107,7 +114,7 @@ function SignInBasic() {
                 textAlign="center"
               >
                 <MKTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-                  {isStaff?"Staff":"Customer"} Sign in
+                  Sign up
                 </MKTypography>
                 <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
                   <Grid item xs={2}>
@@ -130,8 +137,55 @@ function SignInBasic() {
               <MKBox pt={4} pb={3} px={3}>
                 <MKBox component="form" role="form">
                   <MKBox mb={2}>
-                    <MKButton color={(isStaff)?"info":"primary"}  onClick={()=>setIsStaff(!isStaff)}>{(isStaff)?"Customer":"Staff"}</MKButton>
+                    <MKButton color={(isStaff)?"info":"primary"}  onClick={()=>setIsStaff(!isStaff)}>{(isStaff)?"Sign Up Customer":"Sign Up Staff"}</MKButton>
                   </MKBox>
+
+                    {(isStaff)?<div><MKBox mb={2}>
+                    <MKInput type="text" label="First Name" fullWidth onChange={(e)=>setFirstName(e.target.value)} value={firstName}/>
+                  </MKBox>
+                  <MKBox mb={2}>
+                    <MKInput type="text" label="Last Name" fullWidth onChange={(e)=>setLastName(e.target.value)} value={lastName}/>
+                  </MKBox>
+                  <MKBox mb={2}>
+                    <MKInput type="text" label="Date of Birth" fullWidth onChange={(e)=>setDob(e.target.value)} value={dob}/>
+                  </MKBox>
+                  <MKBox mb={2}>
+                    <MKInput type="text" label="Phone Number" fullWidth onChange={(e)=>setPhoneNumber(e.target.value)} value={phoneNumber}/>
+                  </MKBox>
+                  <MKBox mb={2}>
+                    <MKInput type="text" label="Company Name" fullWidth onChange={(e)=>setCompanyName(e.target.value)} value={companyName}/>
+                  </MKBox>
+                  </div>
+                      :<div><MKBox mb={2}>
+                      <MKInput type="text" label="First Name" fullWidth onChange={(e)=>setFirstName(e.target.value)} value={firstName}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="Last Name" fullWidth onChange={(e)=>setLastName(e.target.value)} value={lastName}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="Building Number" fullWidth onChange={(e)=>setBuildingNumber(e.target.value)} value={buildingNumber}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="Street" fullWidth onChange={(e)=>setStreet(e.target.value)} value={street}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="City" fullWidth onChange={(e)=>setCity(e.target.value)} value={city}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="State" fullWidth onChange={(e)=>setState_(e.target.value)} value={state_}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="Phone Number" fullWidth onChange={(e)=>setPhoneNumber(e.target.value)} value={phoneNumber}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="Passport Number" fullWidth onChange={(e)=>setPassportNumber(e.target.value)} value={passportNumber}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="Passport Expiration" fullWidth onChange={(e)=>setPassportExpiration(e.target.value)} value={passportExpiration}/>
+                    </MKBox>
+                    <MKBox mb={2}>
+                      <MKInput type="text" label="Passport Country" fullWidth onChange={(e)=>setPassportCountry(e.target.value)} value={passportCountry}/>
+                    </MKBox></div>}
                   <MKBox mb={2}>
                     <MKInput type="email" label="Email" fullWidth onChange={(e)=>setUsername(e.target.value)} value={username}/>
                   </MKBox>
@@ -151,31 +205,30 @@ function SignInBasic() {
                     </MKTypography>
                   </MKBox>
                   <MKBox mt={4} mb={1}>
-                    <MKButton variant="gradient" color="info" fullWidth onClick={async ()=>{
-                      const res = await fetchLogin(username, password, (isStaff)?"staffLogin":"customerLogin");
-                      if (res['loginSucceeded']){
-                        navigate({pathname:'/pages/landing-pages/author'})
+                    <MKButton variant="gradient" color="info" fullWidth onClick={()=>{
+                        if (isStaff){
+                          fetchSignUpStaff(username, password, companyName, firstName, lastName, dob, phoneNumber);
+                        }
+                        else{
+                          fetchSignUpCustomer(username, password, firstName, lastName, buildingNumber, street, city, state_, phoneNumber, passportNumber, passportExpiration, passportCountry);
+                        }
                       }
-                      else{
-                        setLoginFailed(true);
-                      }
-                    }
                     }>
-                      sign in
+                      sign up
                     </MKButton>
                   </MKBox>
                   <MKBox mt={3} mb={1} textAlign="center">
                     <MKTypography variant="button" color="text">
-                      Don&apos;t have an account?{" "}
+                      Already have an account?{" "}
                       <MKTypography
                         component={Link}
-                        to="/pages/authentication/sign-up"
+                        to="/pages/authentication/sign-in"
                         variant="button"
                         color="info"
                         fontWeight="medium"
                         textGradient
                       >
-                        Sign up
+                        Sign in
                       </MKTypography>
                     </MKTypography>
                   </MKBox>

@@ -1,3 +1,4 @@
+
 /*
 =========================================================
 * Material Kit 2 React - v2.0.0
@@ -33,6 +34,7 @@ import {
   Link,
   useLocation,
   useParams,
+
 } from "react-router-dom";
 // Routes
 import routes from "routes";
@@ -40,26 +42,18 @@ import footerRoutes from "footer.routes";
 
 // Image
 import bgImage from "assets/images/illustrations/illustration-reset.jpg";
-import {fetchFlights, purchaseTicket} from "../../../functions/connects.js";
-const getQueryParams = (query = null) => (query||window.location.search.replace('?','')).split('&').map(e=>e.split('=').map(decodeURIComponent)).reduce((r,[k,v])=>(r[k]=v,r),{});
+import {fetchFlights, purchaseTicket, cancelFlight, postFeedback} from "../../../functions/connects.js";
+import { useState } from "react";
+import {useNavigate} from 'react-router-dom';
 
-class ContactUs extends React.Component {
-  constructor(props) {
-    super(props);
-    // Don't call this.setState() here!
-    this.state = { loaded: false, flights: [] };
-    // this.query = useQuery();
-  }
-  async componentDidMount(){
-    const getQueryParams = (query = null) => (query||window.location.search.replace('?','')).split('&').map(e=>e.split('=').map(decodeURIComponent)).reduce((r,[k,v])=>(r[k]=v,r),{});
-    const params = getQueryParams()
-    // let { origin, destination, departureDate, returnDate } = useParams();
-    var flights = await fetchFlights(params.origin, params.destination,params.departureDate,"")
-    console.log(flights)
-    this.setState({loaded:true, flights: flights, origin: params.origin, destination: params.destination, departureDate: params.departureDate})
-  }
-  render(){
-    if (this.state.loaded){
+function FlightRatings() {
+    const {state} = useLocation();
+    const [modalVisible, setModalVisible] = useState(false)
+    const [flight, setFlight] = useState([])
+    const [comment, setComment] = useState("")
+    const [stars, setStars] = useState("")
+    const navigate = useNavigate();
+
       return (
         <>
           <MKBox position="fixed" top="0.5rem" width="100%">
@@ -89,21 +83,24 @@ class ContactUs extends React.Component {
                   mt={-3}
                 >
                   <MKTypography variant="h3" color="white">
-                    Search Results
+                    Your Flights
                   </MKTypography>
                 </MKBox>
                 <MKBox p={3}>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying flights from {this.state.origin} to {this.state.destination} on {this.state.departureDate}.
+                    Displaying your flights.
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
-                    {this.state.flights.map((element,index)=>
+                    {state.flights.map((element,index)=>
                       {return(
                         <MKBox>
                           <MKTypography>
-                            Airline: {element[0]} | Flight Code: {element[1]} | Departure Time: {element[2]} | Plane ID: {element[3]} | Origin: {element[4]} | Destination: {element[5]} | Arrival Time: {element[6]} | Status: {(element[7]=="o")?"On-Time":"Delayed"} | Price: ${element[8]} {"      "}
-                            <MKButton color="info" onClick={()=>this.setState({modalVisible:true, selectedFlight: element})}>
-                              Buy
+                            Ticket Number: {element[0]} | Airline: {element[1]} | Flight Number: {element[2]} | Departure Date: {element[3]} | Seating: {element[4]} | Name: {element[5]} {element[6]} | Purchase Date: {element[7]}
+                            <MKButton color="primary" onClick={()=>cancelFlight(navigate,element)}>
+                              Cancel
+                            </MKButton>
+                            <MKButton color="info" onClick={()=>{setModalVisible(true);setFlight(element);}}>
+                              Review
                             </MKButton>
                           </MKTypography>
                         </MKBox>)
@@ -112,32 +109,18 @@ class ContactUs extends React.Component {
                   </MKBox>
                 </MKBox>
               </MKBox>
-              <Modal open={this.state.modalVisible} onClose={()=>this.setState({modalVisible:false})}>
+              <Modal open={modalVisible} onClose={()=>setModalVisible(false)}>
                 <MKBox pt={4} pb={3} px={3} style={{backgroundColor:"white",alignSelf:"center",display:"flex",justifyContent:"center"}}>
-                {this.state.ticketFailed&&<MKAlert color="error" dismissible>Failed to purchase ticket!</MKAlert>}
                   <MKBox component="form" role="form">
                     <MKBox mb={2}>
                       <MKBox mb={2}>
-                        <MKInput type="text" label="Class" fullWidth onChange={(e)=>this.setState({travelClass:e.target.value})} value={this.state.travelClass}/>
+                        <MKInput type="text" label="Comment" fullWidth onChange={(e)=>setComment(e.target.value)} value={comment}/>
                       </MKBox>
                       <MKBox mb={2}>
-                        <MKInput type="text" label="Card Number" fullWidth onChange={(e)=>this.setState({cardNumber:e.target.value})} value={this.state.cardNumber}/>
+                        <MKInput type="text" label="Stars" fullWidth onChange={(e)=>setStars(e.target.value)} value={stars}/>
                       </MKBox>
-                      <MKBox mb={2}>
-                        <MKInput type="text" label="Card Type" fullWidth onChange={(e)=>this.setState({cardType:e.target.value})} value={this.state.cardType}/>
-                      </MKBox>
-                      <MKButton color="info" onClick={async ()=>{
-                          var res = await purchaseTicket(this.state.travelClass,this.state.cardNumber,this.state.cardType, this.state.selectedFlight);
-                          if (res["success"]){
-                            console.log("HERE");
-                            window.location.replace("/pages/landing-pages/author");
-                          }
-                          else{
-                            this.setState({ticketFailed:true})
-                          }
-                        }
-                        }>
-                        Buy
+                      <MKButton color="info" onClick={() => postFeedback(flight[0],comment,stars)}>
+                        Publish
                       </MKButton>
                     </MKBox>
                   </MKBox>
@@ -148,13 +131,6 @@ class ContactUs extends React.Component {
           </MKBox>
         </>
       );
-    }
-    else{
-      return(
-        <MKBox/>
-      )
-    }
-  }
 }
 
-export default ContactUs;
+export default FlightRatings;
