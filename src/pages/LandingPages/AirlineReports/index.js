@@ -36,24 +36,42 @@ import {
   useParams,
 
 } from "react-router-dom";
+
 // Routes
 import routes from "routes";
 import footerRoutes from "footer.routes";
+import {CanvasJSChart} from 'canvasjs-react-charts'
+import {ReactSession} from 'react-client-session';
 
 // Image
 import bgImage from "assets/images/illustrations/illustration-reset.jpg";
-import {fetchFlights, purchaseTicket, cancelFlight, postFeedback} from "../../../functions/connects.js";
+import {fetchReport} from "../../../functions/connects.js";
 import { useState } from "react";
 import {useNavigate} from 'react-router-dom';
 
 function AirlineReports() {
     const {state} = useLocation();
-    const [modalVisible, setModalVisible] = useState(false)
-    const [flight, setFlight] = useState([])
-    const [comment, setComment] = useState("")
-    const [stars, setStars] = useState("")
+    const [newStartDate, setNewStartDate] = useState("")
+    const [newEndDate, setNewEndDate] = useState("")
     const navigate = useNavigate();
-
+    const options = {
+    			animationEnabled: true,
+    			exportEnabled: true,
+    			theme: "light2", //"light1", "dark1", "dark2"
+    			title:{
+    				text: "Monthly Breakdown"
+    			},
+    			axisY: {
+    				includeZero: true
+    			},
+    			data: [{
+    				type: "column", //change type to bar, line, area, pie, etc
+    				//indexLabel: "{y}", //Shows y value on all Data Points
+    				indexLabelFontColor: "#5A5757",
+    				indexLabelPlacement: "outside",
+    				dataPoints: (state)&&state.sales
+    			}]
+    		}
       return (
         <>
           <MKBox position="fixed" top="0.5rem" width="100%">
@@ -61,7 +79,6 @@ function AirlineReports() {
               routes={routes}
             />
           </MKBox>
-
               <MKBox
                 bgColor="white"
                 borderRadius="xl"
@@ -83,49 +100,26 @@ function AirlineReports() {
                   mt={-3}
                 >
                   <MKTypography variant="h3" color="white">
-                    Your Flights
+                    {ReactSession.get("companyName")} Ticket Sales
                   </MKTypography>
                 </MKBox>
                 <MKBox p={3}>
+                  <MKBox mb={2}>
+                    <MKInput type="text" label="Start Date (YYYY-MM-DD)" fullWidth onChange={(e)=>setNewStartDate(e.target.value)} value={newStartDate}/>
+                    <MKInput type="text" label="End Date (YYYY-MM-DD)" fullWidth onChange={(e)=>setNewEndDate(e.target.value)} value={newEndDate}/>
+                  </MKBox>
+                  <MKButton color="info" onClick={()=>fetchReport(new Date(newStartDate),new Date(newEndDate),navigate)}>
+                    Calculate Sold Tickets
+                  </MKButton>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying your flights.
+                    Displaying sold tickets from {state&&state.startDate.toISOString().slice(0, 10).replace('T', ' ')} to {state&&state.endDate.toISOString().slice(0, 10).replace('T', ' ')}
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
-                    {state.flights.map((element,index)=>
-                      {return(
-                        <MKBox>
-                          <MKTypography>
-                            Ticket Number: {element[0]} | Airline: {element[1]} | Flight Number: {element[2]} | Departure Date: {element[3]} | Seating: {element[4]} | Name: {element[5]} {element[6]} | Purchase Date: {element[7]}
-                            <MKButton color="primary" onClick={()=>cancelFlight(navigate,element)}>
-                              Cancel
-                            </MKButton>
-                            <MKButton color="info" onClick={()=>{setModalVisible(true);setFlight(element);}}>
-                              Review
-                            </MKButton>
-                          </MKTypography>
-                        </MKBox>)
-                      }
-                    )}
+                    Total Tickets Sold: {state&&state.totalTicketsSold}
+                    {(state)&&(state.sales)&&<CanvasJSChart options= {options} />}
                   </MKBox>
                 </MKBox>
               </MKBox>
-              <Modal open={modalVisible} onClose={()=>setModalVisible(false)}>
-                <MKBox pt={4} pb={3} px={3} style={{backgroundColor:"white",alignSelf:"center",display:"flex",justifyContent:"center"}}>
-                  <MKBox component="form" role="form">
-                    <MKBox mb={2}>
-                      <MKBox mb={2}>
-                        <MKInput type="text" label="Comment" fullWidth onChange={(e)=>setComment(e.target.value)} value={comment}/>
-                      </MKBox>
-                      <MKBox mb={2}>
-                        <MKInput type="text" label="Stars" fullWidth onChange={(e)=>setStars(e.target.value)} value={stars}/>
-                      </MKBox>
-                      <MKButton color="info" onClick={() => postFeedback(flight[0],comment,stars)}>
-                        Publish
-                      </MKButton>
-                    </MKBox>
-                  </MKBox>
-                </MKBox>
-              </Modal>
           <MKBox pt={6} px={1} mt={6}>
             <DefaultFooter content={footerRoutes} />
           </MKBox>

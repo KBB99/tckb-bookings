@@ -239,7 +239,6 @@ function SignInBasic() {
         </Grid>
       </MKBox>
       <MKBox width="100%" position="absolute" zIndex={2} bottom="1.625rem">
-        <SimpleFooter light />
       </MKBox>
     </>
   );

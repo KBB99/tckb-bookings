@@ -36,24 +36,41 @@ import {
   useParams,
 
 } from "react-router-dom";
+
 // Routes
 import routes from "routes";
 import footerRoutes from "footer.routes";
+import {CanvasJSChart} from 'canvasjs-react-charts'
 
 // Image
 import bgImage from "assets/images/illustrations/illustration-reset.jpg";
-import {fetchFlights, purchaseTicket, cancelFlight, postFeedback} from "../../../functions/connects.js";
+import {monthlyBreakdown} from "../../../functions/connects.js";
 import { useState } from "react";
 import {useNavigate} from 'react-router-dom';
 
 function MySpending() {
     const {state} = useLocation();
-    const [modalVisible, setModalVisible] = useState(false)
-    const [flight, setFlight] = useState([])
-    const [comment, setComment] = useState("")
-    const [stars, setStars] = useState("")
+    const [newStartDate, setNewStartDate] = useState("")
+    const [newEndDate, setNewEndDate] = useState("")
     const navigate = useNavigate();
-
+    const options = {
+    			animationEnabled: true,
+    			exportEnabled: true,
+    			theme: "light2", //"light1", "dark1", "dark2"
+    			title:{
+    				text: "Monthly Breakdown"
+    			},
+    			axisY: {
+    				includeZero: true
+    			},
+    			data: [{
+    				type: "column", //change type to bar, line, area, pie, etc
+    				//indexLabel: "{y}", //Shows y value on all Data Points
+    				indexLabelFontColor: "#5A5757",
+    				indexLabelPlacement: "outside",
+    				dataPoints: state.spending
+    			}]
+    		}
       return (
         <>
           <MKBox position="fixed" top="0.5rem" width="100%">
@@ -61,7 +78,6 @@ function MySpending() {
               routes={routes}
             />
           </MKBox>
-
               <MKBox
                 bgColor="white"
                 borderRadius="xl"
@@ -87,11 +103,19 @@ function MySpending() {
                   </MKTypography>
                 </MKBox>
                 <MKBox p={3}>
+                  <MKBox mb={2}>
+                    <MKInput type="text" label="Start Date (YYYY-MM-DD)" fullWidth onChange={(e)=>setNewStartDate(e.target.value)} value={newStartDate}/>
+                    <MKInput type="text" label="End Date (YYYY-MM-DD)" fullWidth onChange={(e)=>setNewEndDate(e.target.value)} value={newEndDate}/>
+                  </MKBox>
+                  <MKButton color="info" onClick={()=>monthlyBreakdown(new Date(newStartDate),new Date(newEndDate),navigate)}>
+                    Calculate for new range
+                  </MKButton>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying your spending.
+                    Displaying your spending from {state.startDate.toISOString().slice(0, 10).replace('T', ' ')} to {state.endDate.toISOString().slice(0, 10).replace('T', ' ')}
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
-                    {state.totalSpent} {state.months}
+                    Total Spent: ${state.totalSpent}
+                    <CanvasJSChart options= {options} />
                   </MKBox>
                 </MKBox>
               </MKBox>

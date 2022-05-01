@@ -83,25 +83,30 @@ function TopDestinations() {
                   mt={-3}
                 >
                   <MKTypography variant="h3" color="white">
-                    Your Flights
+                    Top Destinations
                   </MKTypography>
                 </MKBox>
                 <MKBox p={3}>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying your flights.
+                    Displaying top destinations.
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
-                    {state.flights.map((element,index)=>
+                    In the past year
+                    {state.topDestinationsLastYear.map((element,index)=>
                       {return(
                         <MKBox>
                           <MKTypography>
-                            Ticket Number: {element[0]} | Airline: {element[1]} | Flight Number: {element[2]} | Departure Date: {element[3]} | Seating: {element[4]} | Name: {element[5]} {element[6]} | Purchase Date: {element[7]}
-                            <MKButton color="primary" onClick={()=>cancelFlight(navigate,element)}>
-                              Cancel
-                            </MKButton>
-                            <MKButton color="info" onClick={()=>{setModalVisible(true);setFlight(element);}}>
-                              Review
-                            </MKButton>
+                            Destination: {element[0]} | Total Tickets Sold: {element[1]}
+                          </MKTypography>
+                        </MKBox>)
+                      }
+                    )}
+                    In the past three months
+                    {state.topDestinationsLast3Months.map((element,index)=>
+                      {return(
+                        <MKBox>
+                          <MKTypography>
+                            Destination: {element[0]} | Total Tickets Sold: {element[1]}
                           </MKTypography>
                         </MKBox>)
                       }
@@ -109,23 +114,6 @@ function TopDestinations() {
                   </MKBox>
                 </MKBox>
               </MKBox>
-              <Modal open={modalVisible} onClose={()=>setModalVisible(false)}>
-                <MKBox pt={4} pb={3} px={3} style={{backgroundColor:"white",alignSelf:"center",display:"flex",justifyContent:"center"}}>
-                  <MKBox component="form" role="form">
-                    <MKBox mb={2}>
-                      <MKBox mb={2}>
-                        <MKInput type="text" label="Comment" fullWidth onChange={(e)=>setComment(e.target.value)} value={comment}/>
-                      </MKBox>
-                      <MKBox mb={2}>
-                        <MKInput type="text" label="Stars" fullWidth onChange={(e)=>setStars(e.target.value)} value={stars}/>
-                      </MKBox>
-                      <MKButton color="info" onClick={() => postFeedback(flight[0],comment,stars)}>
-                        Publish
-                      </MKButton>
-                    </MKBox>
-                  </MKBox>
-                </MKBox>
-              </Modal>
           <MKBox pt={6} px={1} mt={6}>
             <DefaultFooter content={footerRoutes} />
           </MKBox>

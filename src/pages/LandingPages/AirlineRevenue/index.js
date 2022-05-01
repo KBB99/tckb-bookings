@@ -34,26 +34,44 @@ import {
   Link,
   useLocation,
   useParams,
-  useNavigate
+
 } from "react-router-dom";
+
 // Routes
 import routes from "routes";
 import footerRoutes from "footer.routes";
+import {CanvasJSChart} from 'canvasjs-react-charts'
+import {ReactSession} from 'react-client-session';
 
 // Image
 import bgImage from "assets/images/illustrations/illustration-reset.jpg";
-import {fetchFlights, purchaseTicket, cancelFlight, postFeedback, fetchFlightRatings, changeFlightStatus} from "../../../functions/connects.js";
+import {fetchTotalRevenue} from "../../../functions/connects.js";
 import { useState } from "react";
-import {ReactSession} from 'react-client-session';
+import {useNavigate} from 'react-router-dom';
 
-function AirlineFlights() {
+function AirlineRevenue() {
     const {state} = useLocation();
-    const [modalVisible, setModalVisible] = useState(false)
-    const [flight, setFlight] = useState([])
-    const [comment, setComment] = useState("")
-    const [stars, setStars] = useState("")
+    const [newStartDate, setNewStartDate] = useState("")
+    const [newEndDate, setNewEndDate] = useState("")
     const navigate = useNavigate();
-
+    const options = {
+    			animationEnabled: true,
+    			exportEnabled: true,
+    			theme: "light2", //"light1", "dark1", "dark2"
+    			title:{
+    				text: "Monthly Breakdown"
+    			},
+    			axisY: {
+    				includeZero: true
+    			},
+    			data: [{
+    				type: "column", //change type to bar, line, area, pie, etc
+    				//indexLabel: "{y}", //Shows y value on all Data Points
+    				indexLabelFontColor: "#5A5757",
+    				indexLabelPlacement: "outside",
+    				dataPoints: state.sales
+    			}]
+    		}
       return (
         <>
           <MKBox position="fixed" top="0.5rem" width="100%">
@@ -61,7 +79,6 @@ function AirlineFlights() {
               routes={routes}
             />
           </MKBox>
-
               <MKBox
                 bgColor="white"
                 borderRadius="xl"
@@ -83,49 +100,30 @@ function AirlineFlights() {
                   mt={-3}
                 >
                   <MKTypography variant="h3" color="white">
-                    {ReactSession.get("companyName")} Flights
+                    {ReactSession.get("companyName")} Revenue
                   </MKTypography>
                 </MKBox>
                 <MKBox p={3}>
+                  <MKBox mb={2}>
+                    <MKInput type="text" label="Start Date (YYYY-MM-DD)" fullWidth onChange={(e)=>setNewStartDate(e.target.value)} value={newStartDate}/>
+                    <MKInput type="text" label="End Date (YYYY-MM-DD)" fullWidth onChange={(e)=>setNewEndDate(e.target.value)} value={newEndDate}/>
+                  </MKBox>
+                  <MKButton color="info" onClick={()=>monthlyBreakdown(new Date(newStartDate),new Date(newEndDate),navigate)}>
+                    Calculate for new range
+                  </MKButton>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying {ReactSession.get("companyName")} flights.
+                    Displaying revenue from {state.startDate.toISOString().slice(0, 10).replace('T', ' ')} to {state.endDate.toISOString().slice(0, 10).replace('T', ' ')}
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
-                    {state.flights.map((element,index)=>
-                      {return(
-                        <MKBox>
-                          <MKTypography>
-                            Flight Number: {element[1]} | Departure Time: {element[2]} | Airplane code: {element[3]} | Departure Airport: {element[4]} | Arrival Airport: {element[5]} | Arrival Time: {element[6]} | Status: {(element[7]=="o")?"On-Time":"Delayed"} | Price: {element[8]}
-                            <MKButton color="primary" onClick={()=>changeFlightStatus(navigate,element[1],(element[7]=="o")?"d":"o")}>
-                              {(element[7]!="o")?"Set On-Time":"Set Delayed"}
-                            </MKButton>
-                            <MKButton color="info" onClick={()=>{fetchFlightRatings(navigate, element[1]);}}>
-                              Reviews
-                            </MKButton>
-                          </MKTypography>
-                        </MKBox>)
-                      }
-                    )}
+                    Total Made: ${state.totalRevenue}
+                    Revenue By Ticket Class: {state.revenueByClass.map((element,index)=>{return(
+                        <p>{element[0]}: ${element[1]}
+                        </p>)
+                      })}
+                    <CanvasJSChart options= {options} />
                   </MKBox>
                 </MKBox>
               </MKBox>
-              <Modal open={modalVisible} onClose={()=>setModalVisible(false)}>
-                <MKBox pt={4} pb={3} px={3} style={{backgroundColor:"white",alignSelf:"center",display:"flex",justifyContent:"center"}}>
-                  <MKBox component="form" role="form">
-                    <MKBox mb={2}>
-                      <MKBox mb={2}>
-                        <MKInput type="text" label="Comment" fullWidth onChange={(e)=>setComment(e.target.value)} value={comment}/>
-                      </MKBox>
-                      <MKBox mb={2}>
-                        <MKInput type="text" label="Stars" fullWidth onChange={(e)=>setStars(e.target.value)} value={stars}/>
-                      </MKBox>
-                      <MKButton color="info" onClick={() => postFeedback(flight[0],comment,stars)}>
-                        Publish
-                      </MKButton>
-                    </MKBox>
-                  </MKBox>
-                </MKBox>
-              </Modal>
           <MKBox pt={6} px={1} mt={6}>
             <DefaultFooter content={footerRoutes} />
           </MKBox>
@@ -133,4 +131,4 @@ function AirlineFlights() {
       );
 }
 
-export default AirlineFlights;
+export default AirlineRevenue;

@@ -34,7 +34,7 @@ import {
   Link,
   useLocation,
   useParams,
-  useNavigate
+
 } from "react-router-dom";
 // Routes
 import routes from "routes";
@@ -42,11 +42,11 @@ import footerRoutes from "footer.routes";
 
 // Image
 import bgImage from "assets/images/illustrations/illustration-reset.jpg";
-import {fetchFlights, purchaseTicket, cancelFlight, postFeedback, fetchFlightRatings, changeFlightStatus} from "../../../functions/connects.js";
+import {fetchFlights, purchaseTicket, cancelFlight, postFeedback} from "../../../functions/connects.js";
 import { useState } from "react";
-import {ReactSession} from 'react-client-session';
+import {useNavigate} from 'react-router-dom';
 
-function AirlineFlights() {
+function CustomerFlights() {
     const {state} = useLocation();
     const [modalVisible, setModalVisible] = useState(false)
     const [flight, setFlight] = useState([])
@@ -83,25 +83,19 @@ function AirlineFlights() {
                   mt={-3}
                 >
                   <MKTypography variant="h3" color="white">
-                    {ReactSession.get("companyName")} Flights
+                    Your Flights
                   </MKTypography>
                 </MKBox>
                 <MKBox p={3}>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying {ReactSession.get("companyName")} flights.
+                    Displaying your flights.
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
                     {state.flights.map((element,index)=>
                       {return(
                         <MKBox>
                           <MKTypography>
-                            Flight Number: {element[1]} | Departure Time: {element[2]} | Airplane code: {element[3]} | Departure Airport: {element[4]} | Arrival Airport: {element[5]} | Arrival Time: {element[6]} | Status: {(element[7]=="o")?"On-Time":"Delayed"} | Price: {element[8]}
-                            <MKButton color="primary" onClick={()=>changeFlightStatus(navigate,element[1],(element[7]=="o")?"d":"o")}>
-                              {(element[7]!="o")?"Set On-Time":"Set Delayed"}
-                            </MKButton>
-                            <MKButton color="info" onClick={()=>{fetchFlightRatings(navigate, element[1]);}}>
-                              Reviews
-                            </MKButton>
+                            Ticket Number: {element[0]} | Airline: {element[1]} | Flight Number: {element[2]} | Departure Date: {element[3]} | Seating: {element[4]} | Name: {element[10]} {element[11]} | Purchase Date: {element[12]}
                           </MKTypography>
                         </MKBox>)
                       }
@@ -133,4 +127,4 @@ function AirlineFlights() {
       );
 }
 
-export default AirlineFlights;
+export default CustomerFlights;

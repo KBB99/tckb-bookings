@@ -154,7 +154,12 @@ function SignInBasic() {
                     <MKButton variant="gradient" color="info" fullWidth onClick={async ()=>{
                       const res = await fetchLogin(username, password, (isStaff)?"staffLogin":"customerLogin");
                       if (res['loginSucceeded']){
-                        navigate({pathname:'/pages/landing-pages/author'})
+                        if (isStaff){
+                          navigate({pathname:'/pages/landing-pages/staff'})
+                        }
+                        else{
+                          navigate({pathname:'/pages/landing-pages/author'})
+                        }
                       }
                       else{
                         setLoginFailed(true);

@@ -83,25 +83,19 @@ function FlightRatings() {
                   mt={-3}
                 >
                   <MKTypography variant="h3" color="white">
-                    Your Flights
+                    Reviews
                   </MKTypography>
                 </MKBox>
                 <MKBox p={3}>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying your flights.
+                    Displaying reviews for flight {state.flightNumber}.
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
-                    {state.flights.map((element,index)=>
+                    {state.ratings.map((element,index)=>
                       {return(
                         <MKBox>
                           <MKTypography>
-                            Ticket Number: {element[0]} | Airline: {element[1]} | Flight Number: {element[2]} | Departure Date: {element[3]} | Seating: {element[4]} | Name: {element[5]} {element[6]} | Purchase Date: {element[7]}
-                            <MKButton color="primary" onClick={()=>cancelFlight(navigate,element)}>
-                              Cancel
-                            </MKButton>
-                            <MKButton color="info" onClick={()=>{setModalVisible(true);setFlight(element);}}>
-                              Review
-                            </MKButton>
+                            Comment: {element[0]} | Rating: {element[1]}
                           </MKTypography>
                         </MKBox>)
                       }

@@ -54,7 +54,10 @@ import MostFrequentCustomer from "layouts/pages/landing-pages/most-frequent-cust
 import AirlineReports from "layouts/pages/landing-pages/airline-reports";
 import EarnedRevenue from "layouts/pages/landing-pages/earned-revenue";
 import TopDestinations from "layouts/pages/landing-pages/top-destinations";
+import CustomerFlights from "layouts/pages/landing-pages/customer-flights";
+import AirlineRevenue from "layouts/pages/landing-pages/airline-revenue";
 import Author from "layouts/pages/landing-pages/author";
+import Staff from "layouts/pages/landing-pages/staff";
 import SignIn from "layouts/pages/authentication/sign-in";
 import SignUp from "layouts/pages/authentication/sign-up";
 
@@ -135,13 +138,23 @@ const routes = [
           },
           {
             name: "earned revenue",
-            route: "/pages/landing-pages/earned-revenue",
-            component: <EarnedRevenue />,
+            route: "/pages/landing-pages/airline-revenue",
+            component: <AirlineRevenue />,
           },
           {
             name: "top destinations",
             route: "/pages/landing-pages/top-destinations",
             component: <TopDestinations />,
+          },
+          {
+            name: "staff",
+            route: "/pages/landing-pages/staff",
+            component: <Staff />,
+          },
+          {
+            name: "staff",
+            route: "/pages/landing-pages/customer-flights",
+            component: <CustomerFlights />,
           },
         ],
       },
