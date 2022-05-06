@@ -96,12 +96,12 @@ function MyFlights() {
                         <MKBox>
                           <MKTypography>
                             Ticket Number: {element[0]} | Airline: {element[1]} | Flight Number: {element[2]} | Departure Date: {element[3]} | Seating: {element[4]} | Name: {element[10]} {element[11]} | Purchase Date: {element[12]}
-                            <MKButton color="primary" onClick={()=>cancelFlight(navigate,element)}>
+                            {(new Date(element[3])>new Date().now)&&<MKButton color="primary" onClick={()=>cancelFlight(navigate,element)}>
                               Cancel
-                            </MKButton>
-                            <MKButton color="info" onClick={()=>{setModalVisible(true);setFlight(element);}}>
+                            </MKButton>}
+                            {(new Date(element[3])<new Date().now)&&<MKButton color="info" onClick={()=>{setModalVisible(true);setFlight(element);}}>
                               Review
-                            </MKButton>
+                            </MKButton>}
                           </MKTypography>
                         </MKBox>)
                       }
@@ -112,6 +112,7 @@ function MyFlights() {
               <Modal open={modalVisible} onClose={()=>setModalVisible(false)}>
                 <MKBox pt={4} pb={3} px={3} style={{backgroundColor:"white",alignSelf:"center",display:"flex",justifyContent:"center"}}>
                   <MKBox component="form" role="form">
+                  {state.showAlert&&<MKAlert color="success">{state.alertMessage}</MKAlert>}
                     <MKBox mb={2}>
                       <MKBox mb={2}>
                         <MKInput type="text" label="Comment" fullWidth onChange={(e)=>setComment(e.target.value)} value={comment}/>
@@ -119,7 +120,7 @@ function MyFlights() {
                       <MKBox mb={2}>
                         <MKInput type="text" label="Stars" fullWidth onChange={(e)=>setStars(e.target.value)} value={stars}/>
                       </MKBox>
-                      <MKButton color="info" onClick={() => postFeedback(flight[0],comment,stars)}>
+                      <MKButton color="info" onClick={() => postFeedback(navigate,flight[0],comment,stars,state)}>
                         Publish
                       </MKButton>
                     </MKBox>

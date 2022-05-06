@@ -24,6 +24,7 @@ import MKButton from "components/MKButton";
 import MKTypography from "components/MKTypography";
 import Modal from '@mui/material/Modal';
 import MKAlert from "components/MKAlert";
+import {ReactSession} from 'react-client-session';
 
 // Material Kit 2 React examples
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
@@ -83,12 +84,12 @@ function CustomerFlights() {
                   mt={-3}
                 >
                   <MKTypography variant="h3" color="white">
-                    Your Flights
+                    {(ReactSession.get("userType")=="staff")?"Customer's flights":"Your"} Flights
                   </MKTypography>
                 </MKBox>
                 <MKBox p={3}>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying your flights.
+                    Displaying {(ReactSession.get("userType")=="staff")?"customer's flights":"your"} flights.
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
                     {state.flights.map((element,index)=>

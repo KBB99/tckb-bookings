@@ -12,6 +12,7 @@ import MKInput from "components/MKInput";
 import React, { useState } from 'react';
 import moment from 'moment';
 import {useNavigate, createSearchParams} from 'react-router-dom';
+import {ReactSession} from 'react-client-session';
 
 // Images
 import bgImage from "assets/images/bg-coworking.jpeg";
@@ -46,18 +47,18 @@ function HeaderOne({navigation}) {
       <MKBox component="nav" position="absolute" top="0.5rem" width="100%">
         <Container>
           <Grid container flexDirection="row" alignItems="center">
-            <MKTypography
+            {(ReactSession.get("username")!=null)&&<MKTypography
               component={Link}
-              href="#"
+              href={ReactSession.get("usertype")=="customer"?"/pages/landing-pages/author":"/pages/landing-pages/staff"}
               variant="button"
               color="white"
               fontWeight="regular"
               py={0.8125}
               mr={2}
             >
-              TCKB Bookings
-            </MKTypography>
-            <MKButton
+              Home
+            </MKTypography>}
+            {(ReactSession.get("username")==null)?<MKButton
               variant="outlined"
               color="white"
               href="/pages/authentication/sign-in"
@@ -75,7 +76,28 @@ function HeaderOne({navigation}) {
                   Sign In
                 </MKTypography>
               </MKBox>
+            </MKButton>:
+            <MKButton
+              variant="outlined"
+              color="white"
+              href="/pages/authentication/sign-in"
+              sx={{ display: { xs: "block", lg: "none" }, ml: "auto" }}
+              onClick={()=>ReactSession.set("username",null)}
+            >
+              <MKBox component="li">
+                <MKTypography
+                  component={Link}
+                  href="/pages/authentication/sign-in"
+                  color="white"
+                  variant="button"
+                  p={1}
+                  // onClick={(e) => e.preventDefault()}
+                >
+                  Log out
+                </MKTypography>
+              </MKBox>
             </MKButton>
+          }
             <MKBox
               component="ul"
               display={{ xs: "none", lg: "flex" }}
@@ -86,7 +108,7 @@ function HeaderOne({navigation}) {
             >
 
             </MKBox>
-            <MKBox
+            {(ReactSession.get("username")==null)?<MKBox
               component="ul"
               display={{ xs: "none", lg: "flex" }}
               p={0}
@@ -106,6 +128,30 @@ function HeaderOne({navigation}) {
                 </MKTypography>
               </MKBox>
             </MKBox>
+            :
+            <MKBox
+              component="ul"
+              display={{ xs: "none", lg: "flex" }}
+              p={0}
+              m={0}
+              sx={{ listStyle: "none" }}
+              onClick={()=>ReactSession.set("username",null)}
+
+            >
+              <MKBox component="li">
+                <MKTypography
+                  component={Link}
+                  href="/pages/authentication/sign-in"
+                  color="white"
+                  variant="button"
+                  p={1}
+                  // onClick={(e) => e.preventDefault()}
+                >
+                  Sign out
+                </MKTypography>
+              </MKBox>
+            </MKBox>
+          }
           </Grid>
         </Container>
       </MKBox>
@@ -149,9 +195,6 @@ function HeaderOne({navigation}) {
             </Stack>
             <Stack direction="row" spacing={1} mt={3}>
               <MKButton color="white" onClick={()=>navigate({pathname:'/pages/landing-pages/contact-us',search: createSearchParams({origin:origin, destination:destination, departureDate:departureDate,returnDate:returnDate}).toString() }) }>Search</MKButton>
-              <MKButton variant="text" color="white">
-                Surprise Me
-              </MKButton>
             </Stack>
 {/*    <div>
   <h1>SQL Response</h1>

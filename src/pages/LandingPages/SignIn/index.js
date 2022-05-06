@@ -138,21 +138,9 @@ function SignInBasic() {
                   <MKBox mb={2}>
                     <MKInput type="password" label="Password" fullWidth onChange={(e)=>setPassword(e.target.value)} value={password}/>
                   </MKBox>
-                  <MKBox display="flex" alignItems="center" ml={-1}>
-                    <Switch checked={rememberMe} onChange={handleSetRememberMe} />
-                    <MKTypography
-                      variant="button"
-                      fontWeight="regular"
-                      color="text"
-                      onClick={handleSetRememberMe}
-                      sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-                    >
-                      &nbsp;&nbsp;Remember me
-                    </MKTypography>
-                  </MKBox>
                   <MKBox mt={4} mb={1}>
                     <MKButton variant="gradient" color="info" fullWidth onClick={async ()=>{
-                      const res = await fetchLogin(username, password, (isStaff)?"staffLogin":"customerLogin");
+                      const res = await fetchLogin(navigate,username, password, (isStaff)?"staffLogin":"customerLogin");
                       if (res['loginSucceeded']){
                         if (isStaff){
                           navigate({pathname:'/pages/landing-pages/staff'})

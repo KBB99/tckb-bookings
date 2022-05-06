@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -34,6 +34,7 @@ import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
 import MKInput from "components/MKInput";
 import MKButton from "components/MKButton";
+import MKAlert from "components/MKAlert";
 
 // Material Kit 2 React example components
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
@@ -65,7 +66,8 @@ function SignInBasic() {
   const [isStaff, setIsStaff] = useState(false)
   const [companyName, setCompanyName] = useState("")
   const [dob, setDob] = useState("")
-
+  const {state} = useLocation();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -113,6 +115,7 @@ function SignInBasic() {
                 mb={1}
                 textAlign="center"
               >
+              {state&&state.showAlert&&<MKAlert color="error">{state.alertMessage}</MKAlert>}
                 <MKTypography variant="h4" fontWeight="medium" color="white" mt={1}>
                   Sign up
                 </MKTypography>
@@ -192,25 +195,13 @@ function SignInBasic() {
                   <MKBox mb={2}>
                     <MKInput type="password" label="Password" fullWidth onChange={(e)=>setPassword(e.target.value)} value={password}/>
                   </MKBox>
-                  <MKBox display="flex" alignItems="center" ml={-1}>
-                    <Switch checked={rememberMe} onChange={handleSetRememberMe} />
-                    <MKTypography
-                      variant="button"
-                      fontWeight="regular"
-                      color="text"
-                      onClick={handleSetRememberMe}
-                      sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-                    >
-                      &nbsp;&nbsp;Remember me
-                    </MKTypography>
-                  </MKBox>
                   <MKBox mt={4} mb={1}>
                     <MKButton variant="gradient" color="info" fullWidth onClick={()=>{
                         if (isStaff){
-                          fetchSignUpStaff(username, password, companyName, firstName, lastName, dob, phoneNumber);
+                          fetchSignUpStaff(navigate, username, password, companyName, firstName, lastName, dob, phoneNumber);
                         }
                         else{
-                          fetchSignUpCustomer(username, password, firstName, lastName, buildingNumber, street, city, state_, phoneNumber, passportNumber, passportExpiration, passportCountry);
+                          fetchSignUpCustomer(navigate, username, password, firstName, lastName, buildingNumber, street, city, state_, phoneNumber, passportNumber, passportExpiration, passportCountry);
                         }
                       }
                     }>

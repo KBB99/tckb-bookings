@@ -472,7 +472,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
         })}
       >
         <MKBox display="flex" justifyContent="space-between" alignItems="center">
-          <MKBox
+          {(ReactSession.get("username")==null)?<MKBox
             component={Link}
             to="/"
             lineHeight={1}
@@ -482,7 +482,19 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
             <MKTypography variant="button" fontWeight="bold" color={light ? "white" : "dark"}>
               {brand}
             </MKTypography>
+          </MKBox>:
+          <MKBox
+            component={Link}
+            to={ReactSession.get("usertype")=="customer"?"/pages/landing-pages/author":"/pages/landing-pages/staff"}
+            lineHeight={1}
+            py={transparent ? 1.5 : 0.75}
+            pl={relative || transparent ? 0 : { xs: 0, lg: 1 }}
+          >
+            <MKTypography variant="button" fontWeight="bold" color={light ? "white" : "dark"}>
+              Home
+            </MKTypography>
           </MKBox>
+        }
           <MKBox
             color="inherit"
             display={{ xs: "none", lg: "flex" }}
@@ -492,7 +504,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
 
           </MKBox>
           <MKBox ml={{ xs: "auto", lg: 0 }}>
-            {ReactSession.get("username")?<MKButton href="/pages/authentication/sign-in" onClick={()=>{ReactSession.set("username",null);window.location.href="/"}}>Sign Out</MKButton>:<MKButton href="/pages/authentication/sign-in">Sign In</MKButton>}
+            {(ReactSession.get("username")!==null)?<MKButton href="/pages/authentication/sign-in" onClick={()=>{ReactSession.set("username",null);window.location.href="/"}}>Sign Out</MKButton>:<MKButton href="/pages/authentication/sign-in">Sign In</MKButton>}
           </MKBox>
           <MKBox
             display={{ xs: "inline-block", lg: "none" }}

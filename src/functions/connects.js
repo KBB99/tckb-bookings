@@ -33,6 +33,7 @@ export const fetchFlights = async (origin, destination,departureDate,returnDate)
   if (departureDate != ""){
     data.departureDate = departureDate
   }
+  console.log(JSON.stringify(data))
   var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
       method: 'POST',
       mode: 'cors',
@@ -46,10 +47,9 @@ export const fetchFlights = async (origin, destination,departureDate,returnDate)
   // .then(res => {return res}).catch(err=>console.log(err))
 }
 
-export const fetchSignUpCustomer = async (username, password, firstName, lastName, buildingNumber, street, city, state_, phoneNumber, passportNumber, passportExpiration, passportCountry) => {
-  console.log(username, password, firstName, lastName, buildingNumber, street, city, state_, phoneNumber, passportNumber, passportExpiration, passportCountry)
-  var data = {username: username, password: password, firstName: firstName, lastName: lastName, buildingNumber: buildingNumber, street: street, city: city, state_: state_, phoneNumber: phoneNumber, passportNumber: passportNumber, passportExpiration: passportExpiration, passportCountry: passportCountry, action: "signUp", userType: "customer"}
-  console.log(JSON.stringify(data))
+export const fetchRoundTrip = async (origin, destination,departureDate,returnDate) => {
+  console.log(origin, destination,departureDate,returnDate)
+  var data = {origin: origin, destination: destination, action: "search"}
   var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
       method: 'POST',
       mode: 'cors',
@@ -58,13 +58,50 @@ export const fetchSignUpCustomer = async (username, password, firstName, lastNam
     }
   )
   res = await res.json()
-  console.log(res)
+  if (departureDate != ""){
+    data.departureDate = departureDate
+    var res2 = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
+        method: 'POST',
+        mode: 'cors',
+        cache: "no-cache",
+        body: JSON.stringify(data)
+      }
+    )
+    res2 = await res2.json()
+    res =  [...res,res2]
+  }
+  return res
+  // then(res => res.json())
+  // .then(res => {return res}).catch(err=>console.log(err))
+}
+
+export const fetchSignUpCustomer = async (navigate, username, password, firstName, lastName, buildingNumber, street, city, state_, phoneNumber, passportNumber, passportExpiration, passportCountry) => {
+  try{
+    console.log(username, password, firstName, lastName, buildingNumber, street, city, state_, phoneNumber, passportNumber, passportExpiration, passportCountry)
+    var data = {username: username, password: password, firstName: firstName, lastName: lastName, buildingNumber: buildingNumber, street: street, city: city, state_: state_, phoneNumber: phoneNumber, passportNumber: passportNumber, passportExpiration: passportExpiration, passportCountry: passportCountry, action: "signUp", userType: "customer"}
+    console.log(JSON.stringify(data))
+    var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
+        method: 'POST',
+        mode: 'cors',
+        cache: "no-cache",
+        body: JSON.stringify(data)
+      }
+    )
+    res = await res.json()
+    console.log(res)
+    await fetchLogin(navigate,username, password, "customerLogin")
+  }
+  catch(e){
+    console.log(e)
+    navigate('/pages/authentication/sign-up',{state:{showAlert:true,alertMessage:"Login failed. Username already exists. Please sign-in instead."}})
+  }
   // return res
   // then(res => res.json())
   // .then(res => {return res}).catch(err=>console.log(err))
 }
 
-export const fetchSignUpStaff = async (username, password, companyName, firstName, lastName, dob, phoneNumber) => {
+export const fetchSignUpStaff = async (navigate, username, password, companyName, firstName, lastName, dob, phoneNumber) => {
+  try{
   console.log(username, password, companyName, firstName, lastName, dob)
   var data = {username: username, password: password, companyName: companyName, firstName: firstName, lastName: lastName, dob:dob, phoneNumber:phoneNumber, action: "signUp", userType: "staff"}
   console.log(JSON.stringify(data))
@@ -77,13 +114,18 @@ export const fetchSignUpStaff = async (username, password, companyName, firstNam
   )
   res = await res.json()
   console.log(res)
-  await fetchLogin(username, password, "staffLogin")
+  await fetchLogin(navigate, username, password, "staffLogin")
+}
+  catch(e){
+    console.log(e)
+    navigate('/pages/authentication/sign-up',{state:{showAlert:true,alertMessage:"Login failed. Username already exists. Please sign-in instead."}})
+  }
   // return res
   // then(res => res.json())
   // .then(res => {return res}).catch(err=>console.log(err))
 }
 
-export const fetchLogin = async (username, password, loginType) => {
+export const fetchLogin = async (navigate, username, password, loginType) => {
   console.log(username, password)
   try{
     var data = {username: username, password: password, action: loginType}
@@ -104,9 +146,8 @@ export const fetchLogin = async (username, password, loginType) => {
       ReactSession.set("lastName", lastName)
       ReactSession.set("userType",(loginType)=="staffLogin"?"staff":"customer")
       ReactSession.set('loggedIn',true)
-      if (loginType=="customerLogin"){
-        ReactSession.set("expDate",res["row"][9])
-      }
+      ReactSession.set("expDate",res["row"][9])
+      navigate({pathname:'/pages/landing-pages/author'})
     }
     else if (res["loginSucceeded"]){
       ReactSession.set("username",username)
@@ -118,9 +159,7 @@ export const fetchLogin = async (username, password, loginType) => {
       ReactSession.set("companyName", companyName)
       ReactSession.set("userType","staff")
       ReactSession.set('loggedIn',true)
-      if (loginType=="customerLogin"){
-        ReactSession.set("expDate",res["row"][9])
-      }
+      navigate({pathname:'/pages/landing-pages/staff'})
     }
     return res
   }
@@ -254,7 +293,7 @@ export const fetchCustomerAirlineFlights = async (navigate, email) => {
   )
   res = await res.json()
   console.log(res)
-  navigate('/pages/landing-pages/customer-flights',{state:{flights:res}})
+  navigate('/pages/landing-pages/customer-flights',{state:{flights:res,staffView:true}})
 }
 
 export const fetchEarnedRevenue = async (startDate, endDate) => {
@@ -328,29 +367,35 @@ export const fetchTopDestinationStuff = async (navigate) => {
 }
 
 export const postNewFlight = async (navigate,flightNumber,departureTime,aircraftID, departureAirport, arrivalAirport, arrivalTime,status, basePrice) => {
-  var data = {
-    companyName: ReactSession.get("companyName"),
-    flightNumber: flightNumber,
-    departureTime: departureTime,
-    aircraftID: aircraftID,
-    departureAirport: departureAirport,
-    arrivalAirport: arrivalAirport,
-    arrivalTime: arrivalTime,
-    status: status,
-    basePrice: basePrice,
-    action: "postNewFlight"
-  }
-  console.log(JSON.stringify(data))
-  var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
-      method: 'POST',
-      mode: 'cors',
-      cache: "no-cache",
-      body: JSON.stringify(data)
+  try{
+    var data = {
+      companyName: ReactSession.get("companyName"),
+      flightNumber: flightNumber,
+      departureTime: departureTime,
+      aircraftID: aircraftID,
+      departureAirport: departureAirport,
+      arrivalAirport: arrivalAirport,
+      arrivalTime: arrivalTime,
+      status: status,
+      basePrice: basePrice,
+      action: "postNewFlight"
     }
-  )
-  res = await res.json()
-  console.log(res)
-  navigate('/pages/landing-pages/staff',{state:{showAlert:true,alertMessage:"Successfully created flight"}})
+    console.log(JSON.stringify(data))
+    var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
+        method: 'POST',
+        mode: 'cors',
+        cache: "no-cache",
+        body: JSON.stringify(data)
+      }
+    )
+    res = await res.json()
+    console.log(res)
+    navigate('/pages/landing-pages/staff',{state:{showAlert:true,alertMessage:"Successfully created flight"}})
+  }
+  catch(e){
+    console.log(e)
+    navigate('/pages/landing-pages/staff',{state:{showAlert:true,alertMessage:"Oh no! Failed to create flight!"}})
+  }
   // return res
 }
 
@@ -375,7 +420,7 @@ export const changeFlightStatus = async (navigate, flightNumber, status) => {
 }
 
 export const addAirport = async (navigate,airportCode, airportName, airportCity, airportCountry,airportType) => {
-  var data = {
+  try{var data = {
     action: "postAirport",
     companyName: ReactSession.get("companyName"),
     code: airportCode,
@@ -395,29 +440,40 @@ export const addAirport = async (navigate,airportCode, airportName, airportCity,
   res = await res.json()
   console.log(res)
   navigate('/pages/landing-pages/staff',{state:{showAlert:true,alertMessage:"Successfully created airport"}})
+}
+catch(e){
+  console.log(e)
+  navigate('/pages/landing-pages/staff',{state:{showAlert:true,alertMessage:"Oh no! Failed to create airport!"}})
+}
   // return res
 }
 
 export const addAirplane = async (navigate,aircraftID, seats, manuCompany, age) => {
-  var data = {
-    companyName: ReactSession.get("companyName"),
-    action: "postAirplane",
-    aircraftID: aircraftID,
-    seats: seats,
-    manuCompany: manuCompany,
-    age: age
-  }
-  console.log(JSON.stringify(data))
-  var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
-      method: 'POST',
-      mode: 'cors',
-      cache: "no-cache",
-      body: JSON.stringify(data)
+  try{
+    var data = {
+      companyName: ReactSession.get("companyName"),
+      action: "postAirplane",
+      aircraftID: aircraftID,
+      seats: seats,
+      manuCompany: manuCompany,
+      age: age
     }
-  )
-  res = await res.json()
-  console.log(res)
-  navigate('/pages/landing-pages/staff',{state:{showAlert:true,alertMessage:"Successfully created airplane"}})
+    console.log(JSON.stringify(data))
+    var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
+        method: 'POST',
+        mode: 'cors',
+        cache: "no-cache",
+        body: JSON.stringify(data)
+      }
+    )
+    res = await res.json()
+    console.log(res)
+    navigate('/pages/landing-pages/staff',{state:{showAlert:true,alertMessage:"Successfully created airplane"}})
+  }
+  catch(e){
+    console.log(e)
+    navigate('/pages/landing-pages/staff',{state:{showAlert:true,alertMessage:"Oh no! Failed to create airplane!"}})
+  }
   // return res
 }
 
@@ -440,23 +496,30 @@ export const cancelFlight = async (navigate, flight) => {
   // return res
 }
 
-export const postFeedback = async (ticketNumber,comment, stars) => {
-  var data = {
-    ticketNumber:ticketNumber,
-    comment: comment,
-    stars: stars,
-    action: "postFeedback"
-  }
-  console.log(JSON.stringify(data))
-  var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
-      method: 'POST',
-      mode: 'cors',
-      cache: "no-cache",
-      body: JSON.stringify(data)
+export const postFeedback = async (navigate,ticketNumber,comment, stars, state) => {
+  try{
+    var data = {
+      ticketNumber:ticketNumber,
+      comment: comment,
+      stars: stars,
+      action: "postFeedback"
     }
-  )
-  res = await res.json()
-  console.log(res)
+    console.log(JSON.stringify(data))
+    var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
+        method: 'POST',
+        mode: 'cors',
+        cache: "no-cache",
+        body: JSON.stringify(data)
+      }
+    )
+    res = await res.json()
+    console.log(res)
+    navigate('/pages/landing-pages/my-flights',{state:{showAlert:true,alertMessage:"Review published! Thank you for your feedback.",...state}})
+  }
+  catch (err){
+    console.log(err)
+    navigate('/pages/landing-pages/my-flights',{state:{showAlert:true,alertMessage:"You've already reviewed this flight!!!",...state}})
+  }
   // return res
 }
 

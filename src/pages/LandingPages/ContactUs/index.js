@@ -27,6 +27,8 @@ import MKAlert from "components/MKAlert";
 // Material Kit 2 React examples
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import DefaultFooter from "examples/Footers/DefaultFooter";
+import {ReactSession} from 'react-client-session';
+
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -56,7 +58,7 @@ class ContactUs extends React.Component {
     // let { origin, destination, departureDate, returnDate } = useParams();
     var flights = await fetchFlights(params.origin, params.destination,params.departureDate,"")
     console.log(flights)
-    this.setState({loaded:true, flights: flights, origin: params.origin, destination: params.destination, departureDate: params.departureDate})
+    this.setState({loaded:true, flights: flights, origin: params.origin, destination: params.destination, departureDate: params.departureDate, returnDate: params.returnDate})
   }
   render(){
     if (this.state.loaded){
@@ -94,7 +96,7 @@ class ContactUs extends React.Component {
                 </MKBox>
                 <MKBox p={3}>
                   <MKTypography variant="body2" color="text" mb={3}>
-                    Displaying flights from {this.state.origin} to {this.state.destination} on {this.state.departureDate}.
+                    Displaying flights from {this.state.origin} to {this.state.destination} departing on {this.state.departureDate} {this.state.returnDate&&` and returning on ${this.state.returnDate}`}.
                   </MKTypography>
                   <MKBox width="100%" component="form" method="post" autocomplete="off">
                     {this.state.flights.map((element,index)=>
@@ -102,9 +104,14 @@ class ContactUs extends React.Component {
                         <MKBox>
                           <MKTypography>
                             Airline: {element[0]} | Flight Code: {element[1]} | Departure Time: {element[2]} | Plane ID: {element[3]} | Origin: {element[4]} | Destination: {element[5]} | Arrival Time: {element[6]} | Status: {(element[7]=="o")?"On-Time":"Delayed"} | Price: ${element[8]} {"      "}
-                            <MKButton color="info" onClick={()=>this.setState({modalVisible:true, selectedFlight: element})}>
+                            {(ReactSession.get("username")==null)?<a href="/pages/authentication/sign-in">
+                              <MKButton color="info">
+                                Sign in to Buy
+                                </MKButton>
+                            </a>
+                            :(new Date(element[2])>=new Date().now)&&(ReactSession.get("userType")!=="staff")&&<MKButton color="info" onClick={()=>this.setState({modalVisible:true, selectedFlight: element})}>
                               Buy
-                            </MKButton>
+                            </MKButton>}
                           </MKTypography>
                         </MKBox>)
                       }

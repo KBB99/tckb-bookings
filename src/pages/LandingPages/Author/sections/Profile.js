@@ -51,32 +51,6 @@ function Profile() {
                   Search Flights
                 </MKButton>
               </MKBox>
-              <Grid container spacing={3} mb={3}>
-                <Grid item>
-                  <MKTypography component="span" variant="body2" fontWeight="bold">
-                    323&nbsp;
-                  </MKTypography>
-                  <MKTypography component="span" variant="body2" color="text">
-                    Posts
-                  </MKTypography>
-                </Grid>
-                <Grid item>
-                  <MKTypography component="span" variant="body2" fontWeight="bold">
-                    3.5k&nbsp;
-                  </MKTypography>
-                  <MKTypography component="span" variant="body2" color="text">
-                    Followers
-                  </MKTypography>
-                </Grid>
-                <Grid item>
-                  <MKTypography component="span" variant="body2" fontWeight="bold">
-                    260&nbsp;
-                  </MKTypography>
-                  <MKTypography component="span" variant="body2" color="text">
-                    Following
-                  </MKTypography>
-                </Grid>
-              </Grid>
               <MKButton variant="body1" fontWeight="light" color="text" onClick={()=>fetchMyFlights(navigate)}>
                 <MKTypography
                   component="a"
