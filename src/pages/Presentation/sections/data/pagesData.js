@@ -36,6 +36,6 @@ export default [
   {
     image: `${imagesPrefix}/author.jpg`,
     name: "Author Page",
-    route: "/pages/landing-pages/author",
+    route: "/home/customer",
   },
 ];

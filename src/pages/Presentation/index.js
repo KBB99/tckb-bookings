@@ -49,7 +49,7 @@ function HeaderOne({navigation}) {
           <Grid container flexDirection="row" alignItems="center">
             {(ReactSession.get("username")!=null)&&<MKTypography
               component={Link}
-              href={ReactSession.get("usertype")=="customer"?"/pages/landing-pages/author":"/pages/landing-pages/staff"}
+              href={ReactSession.get("userType")=="customer"?"/home/customer":"/pages/landing-pages/staff"}
               variant="button"
               color="white"
               fontWeight="regular"
@@ -194,7 +194,7 @@ function HeaderOne({navigation}) {
               {isRoundTrip&&<MKInput label="Return Date (MM/DD/YY)" type="text" value={returnDate} onChange={(e)=>setReturnDate(e.target.value)} style={{backgroundColor:"white"}}/>}
             </Stack>
             <Stack direction="row" spacing={1} mt={3}>
-              <MKButton color="white" onClick={()=>navigate({pathname:'/pages/landing-pages/contact-us',search: createSearchParams({origin:origin, destination:destination, departureDate:departureDate,returnDate:returnDate}).toString() }) }>Search</MKButton>
+              <MKButton color="white" onClick={()=>navigate({pathname:'/search',search: createSearchParams({origin:origin, destination:destination, departureDate:departureDate,returnDate:returnDate}).toString() }) }>Search</MKButton>
             </Stack>
 {/*    <div>
   <h1>SQL Response</h1>

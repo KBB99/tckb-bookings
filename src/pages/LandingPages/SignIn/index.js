@@ -146,7 +146,7 @@ function SignInBasic() {
                           navigate({pathname:'/pages/landing-pages/staff'})
                         }
                         else{
-                          navigate({pathname:'/pages/landing-pages/author'})
+                          navigate({pathname:'/home/customer'})
                         }
                       }
                       else{

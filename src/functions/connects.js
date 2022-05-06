@@ -144,10 +144,10 @@ export const fetchLogin = async (navigate, username, password, loginType) => {
       var lastName = res["row"][2]
       ReactSession.set("firstName", firstName)
       ReactSession.set("lastName", lastName)
-      ReactSession.set("userType",(loginType)=="staffLogin"?"staff":"customer")
+      ReactSession.set("userType","customer")
       ReactSession.set('loggedIn',true)
       ReactSession.set("expDate",res["row"][9])
-      navigate({pathname:'/pages/landing-pages/author'})
+      navigate({pathname:'/home/customer'})
     }
     else if (res["loginSucceeded"]){
       ReactSession.set("username",username)

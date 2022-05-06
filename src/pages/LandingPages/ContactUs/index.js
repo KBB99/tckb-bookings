@@ -137,7 +137,7 @@ class ContactUs extends React.Component {
                           var res = await purchaseTicket(this.state.travelClass,this.state.cardNumber,this.state.cardType, this.state.selectedFlight);
                           if (res["success"]){
                             console.log("HERE");
-                            window.location.replace("/pages/landing-pages/author");
+                            window.location.replace("/home/customer");
                           }
                           else{
                             this.setState({ticketFailed:true})

@@ -485,7 +485,7 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
           </MKBox>:
           <MKBox
             component={Link}
-            to={ReactSession.get("usertype")=="customer"?"/pages/landing-pages/author":"/pages/landing-pages/staff"}
+            to={(ReactSession.get("userType")=="customer")?"/home/customer":"/pages/landing-pages/staff"}
             lineHeight={1}
             py={transparent ? 1.5 : 0.75}
             pl={relative || transparent ? 0 : { xs: 0, lg: 1 }}

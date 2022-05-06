@@ -98,12 +98,12 @@ const routes = [
           },
           {
             name: "contact us",
-            route: "/pages/landing-pages/contact-us",
+            route: "/search",
             component: <ContactUs />,
           },
           {
             name: "author",
-            route: "/pages/landing-pages/author",
+            route: "/home/customer",
             component: <Author />,
           },
           {
