@@ -96,10 +96,10 @@ function MyFlights() {
                         <MKBox>
                           <MKTypography>
                             Ticket Number: {element[0]} | Airline: {element[1]} | Flight Number: {element[2]} | Departure Date: {element[3]} | Seating: {element[4]} | Name: {element[10]} {element[11]} | Purchase Date: {element[12]}
-                            {(new Date(element[3])>new Date().now)&&<MKButton color="primary" onClick={()=>cancelFlight(navigate,element)}>
+                            {((new Date(element[3])).getTime()>new Date().getTime())&&<MKButton color="primary" onClick={()=>cancelFlight(navigate,element)}>
                               Cancel
                             </MKButton>}
-                            {(new Date(element[3])<new Date().now)&&<MKButton color="info" onClick={()=>{setModalVisible(true);setFlight(element);}}>
+                            {((new Date(element[3])).getTime()<new Date().getTime())&&<MKButton color="info" onClick={()=>{setModalVisible(true);setFlight(element);}}>
                               Review
                             </MKButton>}
                           </MKTypography>

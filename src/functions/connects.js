@@ -207,6 +207,7 @@ export const fetchMyFlights = async (navigate) => {
     email: ReactSession.get("username"),
     action: "getMyFlights"
   }
+  console.log(JSON.stringify(data))
   var res = await fetch('https://hvizbzrm4k.execute-api.us-east-1.amazonaws.com/prod/1',{
       method: 'POST',
       mode: 'cors',

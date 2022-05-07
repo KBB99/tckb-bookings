@@ -109,7 +109,7 @@ class ContactUs extends React.Component {
                                 Sign in to Buy
                                 </MKButton>
                             </a>
-                            :(new Date(element[2])>=new Date().now)&&(ReactSession.get("userType")!=="staff")&&<MKButton color="info" onClick={()=>this.setState({modalVisible:true, selectedFlight: element})}>
+                            :((new Date(element[2])).getTime()>new Date().getTime())&&<MKButton color="info" onClick={()=>this.setState({modalVisible:true, selectedFlight: element})}>
                               Buy
                             </MKButton>}
                           </MKTypography>
